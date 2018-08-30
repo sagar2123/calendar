@@ -26,3 +26,58 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+.container-width{
+  width: 14.2857%;
+  min-height: 50px;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black; 
+}
+.highlight{
+  color: red;
+}
+.show{
+  display: block;
+}
+.hide{
+  display: none;
+}
+.event-block{
+  min-height: 500px;
+  margin-top: 30px;
+  border: 1px solid black;
+}
+.calendar-container{
+  border-top: 1px solid black;
+  border-left: 1px solid black; 
+}
+.calendar-actions-container{
+  margin-top: 30px;
+}
+.event-block-container{
+  min-height: 50px;
+}
+.add-event-popup{
+  position: absolute;
+  width: 50%;
+  min-height: 500px;
+  border: 1px solid black;
+  background: white;
+  margin-left: 25%;
+  top: 200px;
+  z-index: 2;
+}
+.popup-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: black;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.current-month-year-container{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
