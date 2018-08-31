@@ -38,7 +38,7 @@ class EventPopup extends Component {
                 </div>
             </div>
         <button onClick={()=>this.props.store.closeEventPopup()}>Close</button>
-        <button onClick={()=>this.props.store.saveEvent()}>Save</button>
+        <button onClick={()=>this.props.store.saveEvent(this.props.store.eventIndex)}>Save</button>
       </div>
     }
    

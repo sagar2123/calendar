@@ -4,32 +4,38 @@ import {action} from 'mobx';
 class calendarStore {
     @observable weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     @observable monthDays = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    @observable day=20;
+    @observable hours = ['01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00'];
     @observable emptyDatesCount = 0;
     @observable currentDate = new Date();
     @observable days = this.getDaysInMonth(this.currentDate.getMonth(),this.currentDate.getFullYear());
     @observable showEventBox = false;
     @observable addEventPopup = false;
+    @observable weekView = true;
     @observable events = {
         "2018": {
             "7": {
-                "30": {
-                    "01": [{
+                "30":  [{
                         eventName: "Random",
-                        eventStartTime: "3:30",
-                        endTime: "4:30"
+                        eventStartTime: "03:00",
+                        endTime: "04:00"
                     },{
                         eventName: "Random2",
-                        eventStartTime: "1:30",
-                        endTime: "2:30"
+                        eventStartTime: "04:00",
+                        endTime: "05:00"
                     },{
                         eventName: "Random3",
-                        eventStartTime: "2:30",
-                        endTime: "3:30"
+                        eventStartTime: "05:00",
+                        endTime: "06:00"
+                    },{
+                        eventName: "Random4",
+                        eventStartTime: "06:00",
+                        endTime: "07:00"
+                    },{
+                        eventName: "Random5",
+                        eventStartTime: "07:00",
+                        endTime: "08:00"
                     }]
                 }
-            }
-
         }
     };
     @observable formModel = {
@@ -37,6 +43,7 @@ class calendarStore {
         eventStartTime: "",
         endTime: ""
     };
+    @observable eventIndex = -1;
     @observable currentEvents = [];
 
 
@@ -79,11 +86,11 @@ class calendarStore {
         }
     }
 
-    @action getEventInfo(date) {
-        this.currentDate = date;
-        this.getCurrentEventData(date);
-        this.showEventBox = true;
-    }
+    // @action getEventInfo(date) {
+    //     this.currentDate = date;
+    //     this.getCurrentEventData(date);
+    //     this.showEventBox = true;
+    // }
 
     @action getCurrentEventData(date) {
         if(this.events.hasOwnProperty(date.getDate().toString()+date.getMonth().toString()+date.getFullYear().toString())){
@@ -91,8 +98,27 @@ class calendarStore {
         }
     }
 
-    @action addEvent() {
+    @action addEvent(event, date, flowType, index) {
+        this.currentDate = date;
+        this.getCurrentEventData(date);
+        this.eventIndex = index;
         this.addEventPopup = true;
+
+        if(flowType === 'edit'){
+            event.stopPropagation();
+            this.formModel.eventStartTime = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventStartTime;
+            this.formModel.endTime = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].endTime;
+            this.formModel.eventName = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventName;
+        }
+
+        if(flowType === 'add'){
+            this.eventIndex = -1;
+            this.formModel = {
+                eventName: "",
+                eventStartTime: "",
+                endTime: ""
+            }
+        }
     }
 
     @action closeEventPopup() {
@@ -105,19 +131,44 @@ class calendarStore {
         })
     }
     
-    @action saveEvent() {
-        this.events[this.currentDate.getDate().toString()+this.currentDate.getMonth().toString()+this.currentDate.getFullYear().toString()].push(this.formModel);
+    @action saveEvent(index) {
+        if(index!== -1){
+            this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventName = this.formModel.eventName;
+            this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventStartTime = this.formModel.eventStartTime;
+            this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].endTime = this.formModel.endTime;
+        }else{
+            if(!this.events.hasOwnProperty(this.currentDate.getFullYear())){
+                this.events[this.currentDate.getFullYear()] = {};
+            }if(!this.events[this.currentDate.getFullYear()].hasOwnProperty(this.currentDate.getMonth())){
+                this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()] = {};
+            }if(!this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()].hasOwnProperty(this.currentDate.getDate())){
+                this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()] = [];
+            }
+            if(this.formModel){
+                var arr = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()];
+                arr.push(this.formModel);
+                Object.assign(this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()],
+                 { [this.currentDate.getDate()] : arr }
+                 )
+                // this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()].push(this.formModel);
+                this.formModel = {
+                eventName: "",
+                eventStartTime: "",
+                endTime: ""
+            }
+            }
+        }
         this.closeEventPopup();
-        this.resetFormModel();
     }
 
-    @action resetFormModel() {
-        this.formModel = {
-            eventName : "",
-            eventStartTime: "",
-            endTime: ""
-        }
+    @action openMonthView() {
+        this.weekView = false;
     }
+
+    @action openWeekView() {
+        this.weekView = true;
+    }
+
 }
 
 export default calendarStore;

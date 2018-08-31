@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import {observer, inject} from 'mobx-react';
-import './App.css';
-import  DayComponent from './components/DayComponent';
-import  EventPopup from './components/EventPopup';
-import  PopupOverlay from './components/PopupOverlay';
+import '../App.css';
+import  DayComponent from './DayComponent';
+import  EventPopup from './EventPopup';
+import  PopupOverlay from './PopupOverlay';
 
 @inject('store')
 @observer
-class App extends Component {
+class MonthView extends Component {
   constructor(props) {
     super(props);
-    // this.props.store.getDaysInMonth(1,2018);
   }
+
   render() {
     var emptyDates = [];
     for (var i = 0; i < this.props.store.emptyDatesCount; i++) {
@@ -32,10 +32,13 @@ class App extends Component {
       <div className="App">
         <div className="container">
           <div className="row current-month-year-container">
-            <div className="col-md-6">
+            <div className="col-md-4">
               Current Month: {this.props.store.monthDays[this.props.store.currentDate.getMonth()]}
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
+              <button onClick={()=>this.props.store.openWeekView()}>Week View</button>
+          </div>
+          <div className="col-md-4">
               Current Year: {this.props.store.currentDate.getFullYear()}
           </div>
          </div>
@@ -64,4 +67,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default MonthView;

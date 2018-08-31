@@ -28,9 +28,9 @@
 }
 .container-width{
   width: 14.2857%;
-  min-height: 50px;
-  border-bottom: 1px solid black;
-  border-right: 1px solid black; 
+  min-height: 130px;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0; 
 }
 .highlight{
   color: red;
@@ -47,8 +47,8 @@
   border: 1px solid black;
 }
 .calendar-container{
-  border-top: 1px solid black;
-  border-left: 1px solid black; 
+  border-top: 1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0; 
 }
 .calendar-actions-container{
   margin-top: 30px;
@@ -80,4 +80,35 @@
 .current-month-year-container{
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.event-button{
+  display: block;
+  width: 100%;
+  height: 20px;
+  font-size: 10px;
+  background: #0b8043;
+  color: white;
+  border-radius: 2px;
+  border: 0;
+  margin-top: 2px;
+  margin-bottom: 2px; 
+}
+
+.hours-block-container{
+  height: 35px;
+  border-top: 1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+}
+
+.hours-block{
+  
+}
+
+.events-block{
+  border-left: 1px solid #e0e0e0;
+}
+.day-view-container{
+  border-bottom: 1px solid #e0e0e0;
 }
