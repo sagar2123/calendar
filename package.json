@@ -55,7 +55,7 @@
       "react-app"
     ],
     "plugins": [
-    "transform-decorators-legacy"
+      "transform-decorators-legacy"
     ]
   },
   "scripts": {

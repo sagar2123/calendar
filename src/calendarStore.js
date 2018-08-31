@@ -11,19 +11,31 @@ class calendarStore {
     @observable showEventBox = false;
     @observable addEventPopup = false;
     @observable events = {
-        "3072018": [{
-            eventName: "Random",
-            eventStartTime: "3:30",
-            endTime: "4:30"
-        },{
-            eventName: "Random2",
-            eventStartTime: "1:30",
-            endTime: "2:30"
-        },{
-            eventName: "Random3",
-            eventStartTime: "2:30",
-            endTime: "3:30"
-        }]
+        "2018": {
+            "7": {
+                "30": {
+                    "01": [{
+                        eventName: "Random",
+                        eventStartTime: "3:30",
+                        endTime: "4:30"
+                    },{
+                        eventName: "Random2",
+                        eventStartTime: "1:30",
+                        endTime: "2:30"
+                    },{
+                        eventName: "Random3",
+                        eventStartTime: "2:30",
+                        endTime: "3:30"
+                    }]
+                }
+            }
+
+        }
+    };
+    @observable formModel = {
+        eventName: "",
+        eventStartTime: "",
+        endTime: ""
     };
     @observable currentEvents = [];
 
@@ -87,10 +99,25 @@ class calendarStore {
         this.addEventPopup = false;
     }
 
-    @action addModel() {
-        this.addEventPopup = false;
+    @action addModel(value, name) {
+        Object.assign(this.formModel,{
+            [name] : value
+        })
     }
     
+    @action saveEvent() {
+        this.events[this.currentDate.getDate().toString()+this.currentDate.getMonth().toString()+this.currentDate.getFullYear().toString()].push(this.formModel);
+        this.closeEventPopup();
+        this.resetFormModel();
+    }
+
+    @action resetFormModel() {
+        this.formModel = {
+            eventName : "",
+            eventStartTime: "",
+            endTime: ""
+        }
+    }
 }
 
 export default calendarStore;
