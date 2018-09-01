@@ -233,16 +233,23 @@ class calendarStore {
     @action isValidForm(obj){
         var objStartHr = parseInt(obj.eventStartTime.split(":")[0]);
         var objStartMin = parseInt(obj.eventStartTime.split(":")[1]);
-        var objEndHr = parseInt(obj.eventStartTime.split(":")[0]);
-        var objEndMin = parseInt(obj.eventStartTime.split(":")[1]);
+        var objEndHr = parseInt(obj.endTime.split(":")[0]);
+        var objEndMin = parseInt(obj.endTime.split(":")[1]);
+        var objStartTime = objStartHr*60 + objStartMin;
+        var objEndTime = objEndHr*60 + objEndMin;
         var currentEvents = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()];
         for(var i=0; i<currentEvents.length; i++){
             var startHr = parseInt(currentEvents[i].eventStartTime.split(":")[0]);
             var startMin = parseInt(currentEvents[i].eventStartTime.split(":")[1]); 
             var endHr = parseInt(currentEvents[i].endTime.split(":")[0]);
             var endMin = parseInt(currentEvents[i].endTime.split(":")[1]); 
-            if(!(endHr <= objStartHr && endMin <= objStartMin) && !(startHr >= objEndHr && startMin > objEndMin)){
-                return false
+            var startTime = startHr*60 + startMin;
+            var endTime = endHr*60 + endMin;
+            // if(!(endHr <= objStartHr && endMin <= objStartMin) && !(startHr >= objEndHr && startMin > objEndMin)){
+            //     return false
+            // }
+            if(!(objStartTime <= startTime && objEndTime <= startTime) && !(objStartTime >= endTime && objEndTime >= endTime)){
+                return false;
             }
         }
         return true;
