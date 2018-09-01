@@ -18,8 +18,10 @@ class DayView extends Component {
     return (
       <div className="App">
         <div className="container day-view-container">
+          <div className="current-month-year-container">
+            <button className="btn btn-primary buttons" onClick={() => this.props.store.openMonthView()}>Month View</button>
+          </div>
           {hours}
-          <button onClick={() => this.props.store.openMonthView()}>Month View</button>
         </div>
         <EventPopup />
         <PopupOverlay show={this.props.store.addEventPopup}/>

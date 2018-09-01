@@ -18,7 +18,7 @@ class MonthView extends Component {
         emptyDates.push(<div className="container-width"></div>);
     }
     var allDays = this.props.store.weekDays.map((day)=>{
-      return <div className="container-width">
+      return <div className="container-width month-view-header">
               {day}
            </div>
     });
@@ -32,28 +32,28 @@ class MonthView extends Component {
       <div className="App">
         <div className="container">
           <div className="row current-month-year-container">
-            <div className="col-md-4">
+            <div className="col-md-6">
               Current Month: {this.props.store.monthDays[this.props.store.currentDate.getMonth()]}
-          </div>
-          <div className="col-md-4">
-              <button onClick={()=>this.props.store.openDayView()}>Day View</button>
-          </div>
-          <div className="col-md-4">
+            </div>
+            <div className="col-md-6">
               Current Year: {this.props.store.currentDate.getFullYear()}
+            </div>
           </div>
-         </div>
+          <div className="row current-month-year-container">
+            <div className="col-md-4">
+              <button className="btn btn-secondary buttons" onClick={()=>this.props.store.getPreviousMonth()}>Previous month</button>
+            </div>
+            <div className="col-md-4">
+                <button className="btn btn-primary buttons" onClick={()=>this.props.store.openDayView()}>Day View</button>
+            </div>
+            <div className="col-md-4">
+                <button className="btn btn-secondary buttons" onClick={()=>this.props.store.getNextMonth()}>Next month</button>
+            </div>
+          </div>
           <div className="row calendar-container">
             {allDays}
             {emptyDates}
            {allDates}
-         </div>
-         <div className="row calendar-actions-container">
-            <div className="col-md-6">
-              <button onClick={()=>this.props.store.getNextMonth()}>Next month</button>
-            </div>
-            <div className="col-md-6">
-              <button onClick={()=>this.props.store.getPreviousMonth()}>Previous month</button>
-            </div>
          </div>
         </div>
         <EventPopup />
