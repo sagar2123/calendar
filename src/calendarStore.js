@@ -35,8 +35,27 @@ class calendarStore {
                         eventStartTime: "07:00",
                         endTime: "08:00"
                     }]
-                }
-        }
+                },
+        "8": {
+            "1":  [{
+                    eventName: "Random2",
+                    eventStartTime: "04:00",
+                    endTime: "05:00"
+                },{
+                    eventName: "Random3",
+                    eventStartTime: "05:00",
+                    endTime: "06:00"
+                },{
+                    eventName: "Random4",
+                    eventStartTime: "06:00",
+                    endTime: "07:00"
+                },{
+                    eventName: "Random5",
+                    eventStartTime: "07:00",
+                    endTime: "08:00"
+                }]
+            }
+     }
     };
     @observable formModel = {
         eventName: "",
@@ -45,6 +64,7 @@ class calendarStore {
     };
     @observable eventIndex = -1;
     @observable currentEvents = [];
+    @observable conflictError = false;
 
 
     @action getDaysInMonth(month, year) {
@@ -92,15 +112,15 @@ class calendarStore {
     //     this.showEventBox = true;
     // }
 
-    @action getCurrentEventData(date) {
-        if(this.events.hasOwnProperty(date.getDate().toString()+date.getMonth().toString()+date.getFullYear().toString())){
-            this.currentEvents = this.events[date.getDate().toString()+date.getMonth().toString()+date.getFullYear().toString()];
-        }
-    }
+    // @action getCurrentEventData(date) {
+    //     if(this.events.hasOwnProperty(date.getDate().toString()+date.getMonth().toString()+date.getFullYear().toString())){
+    //         this.currentEvents = this.events[date.getDate().toString()+date.getMonth().toString()+date.getFullYear().toString()];
+    //     }
+    // }
 
     @action addEvent(event, date, flowType, index) {
         this.currentDate = date;
-        this.getCurrentEventData(date);
+        // this.getCurrentEventData(date);
         this.eventIndex = index;
         this.addEventPopup = true;
 
@@ -121,6 +141,45 @@ class calendarStore {
         }
     }
 
+    @action addHourEvent(event, date, flowType, obj) {
+        // this.getCurrentEventData(date);
+        // console.log(this.currentEvents.indexOf(obj));
+        this.addEventPopup = true;
+        
+        if(flowType === 'edit'){
+            if(obj){
+                var index = this.getIndexOfObj(obj);
+            }
+            this.eventIndex = index;
+            event.stopPropagation();
+            this.formModel.eventStartTime = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventStartTime;
+            this.formModel.endTime = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].endTime;
+            this.formModel.eventName = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventName;
+        }
+
+        if(flowType === 'add'){
+            this.eventIndex = -1;
+            this.formModel = {
+                eventName: "",
+                eventStartTime: "",
+                endTime: ""
+            }
+            if(obj){
+                this.formModel.eventStartTime = obj.eventStartTime;
+                var endTime = parseInt(obj.eventStartTime.split(":")[0])+1;
+                this.formModel.endTime = (endTime.toString().length==2?"":"0")+endTime.toString() + ":00";
+            }
+        }
+    }
+
+    @action getIndexOfObj(obj) {
+        for(var i = 0; i<this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()].length; i++){
+            if(this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][i].eventName === obj.eventName && this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][i].eventStartTime === obj.eventStartTime && this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][i].endTime === obj.endTime){
+                return i;
+            }
+        }
+    }
+
     @action closeEventPopup() {
         this.addEventPopup = false;
     }
@@ -133,9 +192,15 @@ class calendarStore {
     
     @action saveEvent(index) {
         if(index!== -1){
-            this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventName = this.formModel.eventName;
-            this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventStartTime = this.formModel.eventStartTime;
-            this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].endTime = this.formModel.endTime;
+            if(this.isValidForm(this.formModel)){
+                this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventName = this.formModel.eventName;
+                this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].eventStartTime = this.formModel.eventStartTime;
+                this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()][index].endTime = this.formModel.endTime;
+                this.closeEventPopup();
+                this.conflictError = false;
+            }else {
+                this.conflictError = true;
+            }
         }else{
             if(!this.events.hasOwnProperty(this.currentDate.getFullYear())){
                 this.events[this.currentDate.getFullYear()] = {};
@@ -144,7 +209,7 @@ class calendarStore {
             }if(!this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()].hasOwnProperty(this.currentDate.getDate())){
                 this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()] = [];
             }
-            if(this.formModel){
+            if(this.isValidForm(this.formModel)){
                 var arr = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()];
                 arr.push(this.formModel);
                 Object.assign(this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()],
@@ -152,20 +217,42 @@ class calendarStore {
                  )
                 // this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()].push(this.formModel);
                 this.formModel = {
-                eventName: "",
-                eventStartTime: "",
-                endTime: ""
-            }
+                    eventName: "",
+                    eventStartTime: "",
+                    endTime: ""
+                 }
+            this.closeEventPopup();
+            this.conflictError = false;
+            }else {
+                this.conflictError = true;
             }
         }
-        this.closeEventPopup();
+        // this.closeEventPopup();
+    }
+
+    @action isValidForm(obj){
+        var objStartHr = parseInt(obj.eventStartTime.split(":")[0]);
+        var objStartMin = parseInt(obj.eventStartTime.split(":")[1]);
+        var objEndHr = parseInt(obj.eventStartTime.split(":")[0]);
+        var objEndMin = parseInt(obj.eventStartTime.split(":")[1]);
+        var currentEvents = this.events[this.currentDate.getFullYear()][this.currentDate.getMonth()][this.currentDate.getDate()];
+        for(var i=0; i<currentEvents.length; i++){
+            var startHr = parseInt(currentEvents[i].eventStartTime.split(":")[0]);
+            var startMin = parseInt(currentEvents[i].eventStartTime.split(":")[1]); 
+            var endHr = parseInt(currentEvents[i].endTime.split(":")[0]);
+            var endMin = parseInt(currentEvents[i].endTime.split(":")[1]); 
+            if(!(endHr <= objStartHr && endMin <= objStartMin) && !(startHr >= objEndHr && startMin > objEndMin)){
+                return false
+            }
+        }
+        return true;
     }
 
     @action openMonthView() {
         this.weekView = false;
     }
 
-    @action openWeekView() {
+    @action openDayView() {
         this.weekView = true;
     }
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {observer, inject} from 'mobx-react';
 import '../App.css';
-import  DayComponent from './DayComponent';
 import  EventPopup from './EventPopup';
 import  PopupOverlay from './PopupOverlay';
 import  HourComponent from './HourComponent';
@@ -22,6 +21,8 @@ class DayView extends Component {
           {hours}
           <button onClick={() => this.props.store.openMonthView()}>Month View</button>
         </div>
+        <EventPopup />
+        <PopupOverlay show={this.props.store.addEventPopup}/>
       </div>
     );
   }

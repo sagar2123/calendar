@@ -39,6 +39,7 @@ class EventPopup extends Component {
             </div>
         <button onClick={()=>this.props.store.closeEventPopup()}>Close</button>
         <button onClick={()=>this.props.store.saveEvent(this.props.store.eventIndex)}>Save</button>
+        <p className={(this.props.store.conflictError? "show": "hide")}>There is a conflict please try any other time to book this event.</p>
       </div>
     }
    

@@ -11,8 +11,8 @@ class HourComponent extends Component {
         var currentDate = this.props.store.currentDate.getDate();
         if(this.props.store.events && this.props.store.events[currentYear] && this.props.store.events[currentYear][currentMonth] && this.props.store.events[currentYear][currentMonth][currentDate]){
             var hourEvent = this.props.store.events[currentYear][currentMonth][currentDate].map((obj, index)=> {
-                if(obj.eventStartTime === this.props.store.hours[this.props.index]){
-                    return <button className="event-button">{obj.eventStartTime}</button>;
+                if(obj.eventStartTime.split(":")[0] === this.props.store.hours[this.props.index].split(":")[0]){
+                    return <button className="event-button" onClick={(e) => this.props.store.addHourEvent(e, new Date(currentYear, currentMonth, currentDate), 'edit', obj)}>{obj.eventName}</button>;
                 }
         });
         }
@@ -20,7 +20,7 @@ class HourComponent extends Component {
             <div className="col-md-1 hours-block">
                 {this.props.store.hours[this.props.index]}
             </div>
-            <div className="col-md-11 events-block">
+            <div className="col-md-11 events-block" onClick={(e) => this.props.store.addHourEvent(e, new Date(currentYear, currentMonth, currentDate), 'add', {eventStartTime: this.props.store.hours[this.props.index]})}>
                 {hourEvent}
             </div>
         </div>

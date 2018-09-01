@@ -36,7 +36,7 @@ class MonthView extends Component {
               Current Month: {this.props.store.monthDays[this.props.store.currentDate.getMonth()]}
           </div>
           <div className="col-md-4">
-              <button onClick={()=>this.props.store.openWeekView()}>Week View</button>
+              <button onClick={()=>this.props.store.openDayView()}>Day View</button>
           </div>
           <div className="col-md-4">
               Current Year: {this.props.store.currentDate.getFullYear()}
@@ -56,10 +56,6 @@ class MonthView extends Component {
             </div>
          </div>
         </div>
-        {/* <div className={"container event-block "+ ((this.props.store.showEventBox)? "show": "hide")}>
-            {currentEvent}
-            <div onClick={() => this.props.store.addEvent()}>Add Event</div>
-        </div> */}
         <EventPopup />
         <PopupOverlay show={this.props.store.addEventPopup}/>
       </div>
